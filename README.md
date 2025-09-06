@@ -240,4 +240,4 @@ public class BlueprintsConfiguration {
 6. **📚 Documentación Completa**: Código bien documentado y README detallado
 
 ---
- usar y extensible para futuros filtros** 🚀 
+
