@@ -10,8 +10,7 @@ import edu.eci.arsw.blueprints.model.Point;
 import edu.eci.arsw.blueprints.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.blueprints.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.blueprints.persistence.impl.InMemoryBlueprintPersistence;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -69,6 +68,70 @@ public class InMemoryPersistenceTest {
         
     }
 
+    @Test
+    public void getBlueprintsByAuthorTest() throws BlueprintPersistenceException, BlueprintNotFoundException {
+        InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
+        
+        // Agregar varios blueprints del mismo autor
+        Point[] pts1 = new Point[]{new Point(0, 0), new Point(10, 10)};
+        Blueprint bp1 = new Blueprint("john", "blueprint1", pts1);
+        
+        Point[] pts2 = new Point[]{new Point(20, 20), new Point(30, 30)};
+        Blueprint bp2 = new Blueprint("john", "blueprint2", pts2);
+        
+        Point[] pts3 = new Point[]{new Point(40, 40), new Point(50, 50)};
+        Blueprint bp3 = new Blueprint("alice", "blueprint3", pts3);
+        
+        ibpp.saveBlueprint(bp1);
+        ibpp.saveBlueprint(bp2);
+        ibpp.saveBlueprint(bp3);
+        
+        // Obtener blueprints de john
+        Set<Blueprint> johnBlueprints = ibpp.getBlueprintsByAuthor("john");
+        assertEquals("Should return 2 blueprints for john", 2, johnBlueprints.size());
+        assertTrue("Should contain blueprint1", johnBlueprints.contains(bp1));
+        assertTrue("Should contain blueprint2", johnBlueprints.contains(bp2));
+        assertFalse("Should not contain alice's blueprint", johnBlueprints.contains(bp3));
+        
+        // Obtener blueprints de alice
+        Set<Blueprint> aliceBlueprints = ibpp.getBlueprintsByAuthor("alice");
+        assertEquals("Should return 1 blueprint for alice", 1, aliceBlueprints.size());
+        assertTrue("Should contain blueprint3", aliceBlueprints.contains(bp3));
+    }
 
+    @Test
+    public void getBlueprintsByNonExistentAuthorTest() {
+        InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
+        
+        try {
+            ibpp.getBlueprintsByAuthor("nonexistent");
+            fail("Should throw BlueprintNotFoundException for non-existent author");
+        } catch (BlueprintNotFoundException ex) {
+            // Expected behavior
+        }
+    }
+
+    @Test
+    public void getAllBlueprintsTest() throws BlueprintPersistenceException {
+        InMemoryBlueprintPersistence ibpp = new InMemoryBlueprintPersistence();
+        
+        // Verificar que ya existe un blueprint por defecto
+        Set<Blueprint> allBlueprints = ibpp.getAllBlueprints();
+        int initialSize = allBlueprints.size();
+        assertTrue("Should have at least 1 blueprint initially", initialSize >= 1);
+        
+        // Agregar más blueprints
+        Point[] pts1 = new Point[]{new Point(0, 0), new Point(10, 10)};
+        Blueprint bp1 = new Blueprint("john", "blueprint1", pts1);
+        
+        Point[] pts2 = new Point[]{new Point(20, 20), new Point(30, 30)};
+        Blueprint bp2 = new Blueprint("alice", "blueprint2", pts2);
+        
+        ibpp.saveBlueprint(bp1);
+        ibpp.saveBlueprint(bp2);
+        
+        allBlueprints = ibpp.getAllBlueprints();
+        assertEquals("Should have initial + 2 blueprints", initialSize + 2, allBlueprints.size());
+    }
     
 }
