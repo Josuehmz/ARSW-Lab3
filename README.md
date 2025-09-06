@@ -200,26 +200,6 @@ Para cambiar al filtro de submuestreo, intercambie las anotaciones @Primary
 entre RedundancyBlueprintFilter y SubsamplingBlueprintFilter
 ```
 
----
-
-## 🔧 Solución de Problemas de Ejecución
-
-### **Correcciones Implementadas**
-1. **Actualización de Spring Framework**: Cambio de versión 4.2.4 → 5.3.23 para compatibilidad con Java moderno
-2. **Configuración Maven Exec Plugin**: Agregado plugin con configuración específica para ejecución
-3. **Mejora de Salida**: Agregado `System.out.flush()` para garantizar visualización inmediata
-4. **Comando Simplificado**: Configuración de clase principal directamente en POM
-5. **Resource Management**: Implementado try-with-resources para cerrar ApplicationContext automáticamente
-6. **Limpieza de Código**: Eliminados imports innecesarios y warnings de linting
-
-### **Comando de Ejecución Correcto**
-```bash
-# Comando actualizado y funcional
-mvn exec:java
-
-# Alternativa con compilación explícita
-mvn compile exec:java
-```
 
 ---
 
